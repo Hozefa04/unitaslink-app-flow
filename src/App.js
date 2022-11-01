@@ -3,6 +3,7 @@ import * as fcl from "@onflow/fcl";
 import { useState, useEffect } from "react";
 import { createFlowSdk } from "@rarible/flow-sdk";
 import { toFlowContractAddress } from "@rarible/flow-sdk/build/common/flow-address";
+import { Helmet } from "react-helmet";
 
 fcl.config({
   "app.detail.title": "UnitasLink",
@@ -21,13 +22,15 @@ const sdk = createFlowSdk(fcl, "mainnet");
 
 function App() {
   const [isMinting, setIsMinting] = useState(false);
+  const [isSuccess, setSuccess] = useState(false);
+  const [tnx, setTnx] = useState(null);
 
   useEffect(() => {
     logIn();
     return () => {
       fcl.unauthenticate();
     };
-  }, []);
+  });
 
   const logIn = async () => {
     fcl.unauthenticate();
@@ -54,8 +57,9 @@ function App() {
       );
 
       console.log(response);
-
+      setTnx(response.txId);
       setIsMinting(false);
+      setSuccess(true);
     } catch (e) {
       setIsMinting(false);
       alert(e);
@@ -64,9 +68,20 @@ function App() {
 
   return (
     <div className="App">
+      {isSuccess && (
+        <Helmet>
+          <script>
+            if (messageHandler){" "}
+            {
+              // eslint-disable-next-line no-undef
+              messageHandler.postMessage(tnx)
+            }
+          </script>
+        </Helmet>
+      )}
       <div className="center-div">
         <div className="loader"></div>
-        <p>{isMinting ? "Mint In Progress..." : "Connecting To Wallet.." } </p>
+        <p>{isMinting ? "Mint In Progress..." : isSuccess ? "Mint Success!" : "Connecting To Wallet.."} </p>
       </div>
     </div>
   );
