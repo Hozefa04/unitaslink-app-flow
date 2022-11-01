@@ -62,7 +62,7 @@ function App() {
       setSuccess(true);
     } catch (e) {
       setIsMinting(false);
-      alert(e);
+      console.log(e);
     }
   };
 
