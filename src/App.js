@@ -30,7 +30,7 @@ function App() {
     return () => {
       fcl.unauthenticate();
     };
-  });
+  }, []);
 
   const logIn = async () => {
     fcl.unauthenticate();
